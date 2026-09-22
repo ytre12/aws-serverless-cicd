@@ -23,21 +23,21 @@ jobs:
 
       - name: Deploy createOrder Lambda
         run: |
-          cd cmtr_v7hgdxhd_lambda_createOrder
-          zip -r ../createOrder.zip .
-          cd ..
+          cd lambdas/cmtr_v7hgdxhd_lambda_createOrder
+          zip -r ../../createOrder.zip .
+          cd ../..
           aws lambda update-function-code --function-name cmtr_v7hgdxhd_lambda_createOrder --zip-file fileb://createOrder.zip
 
       - name: Deploy reserveStock Lambda
         run: |
-          cd cmtr_v7hgdxhd_lambda_reserveStock
-          zip -r ../reserveStock.zip .
-          cd ..
+          cd lambdas/cmtr_v7hgdxhd_lambda_reserveStock
+          zip -r ../../reserveStock.zip .
+          cd ../..
           aws lambda update-function-code --function-name cmtr_v7hgdxhd_lambda_reserveStock --zip-file fileb://reserveStock.zip
 
       - name: Deploy sendNotification Lambda
         run: |
-          cd cmtr_v7hgdxhd_lambda_sendNotification
-          zip -r ../sendNotification.zip .
-          cd ..
+          cd lambdas/cmtr_v7hgdxhd_lambda_sendNotification
+          zip -r ../../sendNotification.zip .
+          cd ../..
           aws lambda update-function-code --function-name cmtr_v7hgdxhd_lambda_sendNotification --zip-file fileb://sendNotification.zip
