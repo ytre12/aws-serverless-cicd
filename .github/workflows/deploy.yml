@@ -1,0 +1,45 @@
+name: Deploy Serverless Lambdas
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      AWS_REGION: eu-west-1
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: eu-west-1
+
+      - name: Zip and Deploy Lambdas
+        run: |
+          # Перевірте точні назви папок або файлів у вашому розархівованому zip
+          # Приклад оновлення коду через AWS CLI:
+          
+          # 1. Create Order Lambda
+          zip -j create_order.zip src/create_order/* || zip create_order.zip index.js || zip create_order.zip lambda_function.py
+          aws lambda update-function-code --function-name <ТОЧНА_НАЗВА_CREATE_ORDER_LAMBDA> --zip-file fileb://create_order.zip
+
+          # 2. Reserve Stock Lambda
+          zip -j reserve_stock.zip src/reserve_stock/* || zip reserve_stock.zip index.js || zip reserve_stock.zip lambda_function.py
+          aws lambda update-function-code --function-name <ТОЧНА_НАЗВА_RESERVE_STOCK_LAMBDA> --zip-file fileb://reserve_stock.zip
+
+          # 3. Send Notification Lambda
+          zip -j send_notification.zip src/send_notification/* || zip send_notification.zip index.js || zip send_notification.zip lambda_function.py
+          aws lambda update-function-code --function-name <ТОЧНА_НАЗВА_SEND_NOTIFICATION_LAMBDA> --zip-file fileb://send_notification.zip
